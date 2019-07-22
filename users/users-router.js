@@ -5,20 +5,22 @@ const Users = require('./users-model');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  const { username, password } = req.body;
+router.get('/', (req, res) => {
+  const { username, password } = req.headers;
 
   Users.findBy({ username })
     .first()
     .then(user => {
+      console.log('user: ', user);
       if (user && bcrypt.compareSync(password, user.password)) {
-        res.status(200).json({ message: `Welcome ${user.username}` });
+        Users.find()
+          .then(users => {
+            res.json(users);
+          })
+          .catch(err => res.send(err));
       } else {
         res.status(401).json({ message: 'You Shall Not Pass!!!' });
       }
-    })
-    .catch(error => {
-      res.status(500).json(error);
     });
 });
 

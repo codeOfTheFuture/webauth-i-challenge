@@ -1,15 +1,12 @@
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
 
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
+const globalMiddleware = require('./config/global-middleware');
 
 const server = express();
 
-server.use(helmet());
-server.use(express.json());
-server.use(cors());
+globalMiddleware(server);
 
 server.use('/api/auth', authRouter);
 server.use('/api/restricted/users', usersRouter);
